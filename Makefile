@@ -7,10 +7,12 @@ CXXFLAGS ?= -g -Wall -O2
 CARGO ?= cargo
 RUSTFLAGS ?= -g
 
+
+.PHONY = check
 # this target should build all executables for all tests
-all:
-	@echo "Please set a concrete build command here"
-	false
+#all:
+	#@echo "Please set a concrete build command here"
+	#false
 
 # C example:
 #all:
@@ -25,5 +27,5 @@ all:
 #	$(CARGO) build --release
 
 # Usually there is no need to modify this
-check: all
+check: 
 	$(MAKE) -C tests check

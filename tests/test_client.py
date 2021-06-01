@@ -8,9 +8,11 @@ from testsupport import info, run_project_executable, warn
 def main() -> None:
     # Replace with the executable you want to test
     try:
-        info("Run message_formatting_test ...")
-        run_project_executable("message_formatting_test")
-        info("OK")
+        with open("client.txt", "w+") as stdout:
+            info("Run client ...")
+            run_project_executable("client", args=["localhost", "1025", "5000"], stdout=stdout)
+            info("OK")
+
     except OSError as e:
         warn(f"Failed to run command: {e}")
         sys.exit(1)
