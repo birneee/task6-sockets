@@ -14,75 +14,89 @@
 #include <iostream>
 #include <cstring>
 #include <atomic>
-#include <iostream>
-#include <fstream>
-#include "../util.h"
+#include "util.h"
+#include "util_msg.h"
+#include "client_message.pb.h"
+#include "server_message.pb.h"
 
 
 int nb_clients  = -1;
 int port        = -1;
 int nb_messages = -1;
 
+std::atomic<int> threads_ids{0};
+uint64_t last_result = 0;
 
-std::string getstring(size_t size) {
-    std::string st;
-    for (int i = 0; i < size; i++) {
-        st += "d";
-    }
-    return st;
+void send_termination_msg(int sockfd, int64_t bytes_sent) {
+    sockets::client_msg client_message;
+    sockets::client_msg::OperationData* op =  client_message.add_ops();
+
+    op->set_type(sockets::client_msg::TERMINATION);
+    std::string client_msg;
+    client_message.SerializeToString(&client_msg);
+
+    char number[4];
+    size_t sz = client_msg.size();
+    std::cout << sz << "\n";
+    convertIntToByteArray(number, sz);
+    std::unique_ptr<char[]> buf = std::make_unique<char[]>(sz+4+1);
+    buf[sz+4] = '\0';
+    ::memcpy(buf.get(), number, 4);
+    ::memcpy(buf.get()+4, client_msg.c_str(), sz);
+
+    secure_send(sockfd, buf.get(), sz+4);
+    bytes_sent += sz+4;
+
+    std::unique_ptr<char[]> buf2;
+    secure_recv(sockfd, buf2, -1);
+
+    sockets::server_msg _msg;
+    _msg.ParseFromString(buf2.get() + 4);
+
+
+    //    std::cout << "server said : " << convertByteArrayToInt(number) << " bytes_sent : " << bytes_sent << "\n";
+    if (_msg.total_bytes() != bytes_sent)
+        exit(2);
+
+    auto id = threads_ids.fetch_sub(1);
+    if (id == 1)
+        last_result = _msg.result();
+
 }
 
-std::unique_ptr<char[]> get_rand_data(size_t& size) {
-    static int i = 1;
-    i*= 2;
-    if ( i > 65536 )
-        i = 1;
-    size = i;
-    auto  st = getstring(i);
-    char* data = const_cast<char*>(st.c_str());
-
-    std::unique_ptr<char[]> ptr = std::make_unique<char[]>(size);
-    ::memcpy(ptr.get(), data, size);
-
-    return std::move(ptr);
-}
-
-
-
-int main (int args, char* argv[]) {
-
-    if (args < 4) {
-        std::cerr << "usage: ./client <hostname> <port> <nb_messages>\n";
-    }
-
-    port        = std::atoi(argv[2]);
-    nb_messages = std::atoi(argv[3]);
-
-    struct hostent *he;
-    if ((he = gethostbyname(argv[1])) == NULL) {
-        exit(1);
-    }
-
+void client(void* args) {
+    threads_ids.fetch_add(1);
     int sockfd, numbytes;
+
+    // connector.s address information
     struct sockaddr_in their_addr; 
 
-    char hostn[400]; 
-    char ipadd[400]; 
+    //***************************block of code finds the localhost IP
+    
+    /*
+    char hostn[400]; //placeholder for the hostname
+    char ipadd[400]; //placeholder for my IP address
 
-    struct hostent *hostIP;
+    struct hostent *hostIP; //placeholder for the IP address
 
+    //if the gethostname returns a name then the program will get the ip address using gethostbyname
     if((gethostname(hostn, sizeof(hostn))) == 0) {
-        hostIP = gethostbyname(hostn);
+        hostIP = gethostbyname(hostn); //the netdb.h function gethostbyname
     }
     else {
-        printf("IP address not found."); 
+        printf("ERROR:FC4539 - IP Address not found."); //error if the hostname is not found
     }
+    */
+    //****************************************************************
+
+
 
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket");
         exit(1);
     }
 
+    struct hostent *he      = reinterpret_cast<struct hostent*>(args);
     their_addr.sin_family   = AF_INET;
     their_addr.sin_port     = htons(port);
     their_addr.sin_addr     = *((struct in_addr *)he->h_addr);
@@ -93,24 +107,52 @@ int main (int args, char* argv[]) {
         exit(1);
     }
 
-    /*
-    std::ofstream myfile;
-     myfile.open ("client.txt", std::ios::app | std::ios::trunc);
-    */
-    uint64_t bytes_sent = 0;
+    int64_t bytes_sent = 0;
     int iterations = nb_messages;
     while (iterations > 0) {
         size_t size = 0;
-        std::unique_ptr<char[]> buf = get_rand_data(size);
+        std::unique_ptr<char[]> buf = get_operation(size);
         if ((numbytes = secure_send(sockfd, buf.get(), size)) == -1) {
             std::cout << std::strerror(errno) << "\n";
             exit(1);
         }
-        std::cout << numbytes << "\n";
         bytes_sent += numbytes;
         iterations--;
     }
 
-    close(sockfd);
+    send_termination_msg(sockfd, bytes_sent);
 
+    close(sockfd);
+}
+
+
+int main (int args, char* argv[]) {
+
+    if (args < 5) {
+        std::cerr << "usage: ./client <nb_threads> <hostname> <port> <nb_messages>\n";
+    }
+
+    nb_clients  = std::atoi(argv[1]);
+    port        = std::atoi(argv[3]);
+    nb_messages = std::atoi(argv[4]);
+
+    struct hostent *he;
+    if ((he = gethostbyname(argv[2])) == NULL) {
+        exit(1);
+    }
+
+    // creating the client threads
+    std::vector<std::thread> threads;
+
+    for (int i = 0; i < nb_clients; i++) {
+        threads.emplace_back(std::thread(client, he));
+    }
+
+    for (auto& thread : threads) {
+        thread.join();
+    }
+
+    std::cout <<  get_result(last_result) << "\n";
+
+    std::cout << "** all threads joined **\n";
 }

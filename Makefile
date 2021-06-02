@@ -8,7 +8,7 @@ CARGO ?= cargo
 RUSTFLAGS ?= -g
 
 
-.PHONY = check
+.PHONY = check clean
 # this target should build all executables for all tests
 #all:
 	#@echo "Please set a concrete build command here"
@@ -29,3 +29,6 @@ RUSTFLAGS ?= -g
 # Usually there is no need to modify this
 check: 
 	$(MAKE) -C tests check
+
+clean:
+	$(MAKE) -C tests clean

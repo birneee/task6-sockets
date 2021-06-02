@@ -1,25 +1,39 @@
-.PHONY : all check client server clean
-all : check client server
+CXX = g++
+COMPILE_FLAGS = -O3 -std=c++17 -Wall -g
 
-check: clean client server format_test run
+.PHONY : all check clean
+all : check
 
-LINKING_FLAGS = -lpthread  -fsanitize=address
+check: clean client_test server_test message_formatting_tests client server run
+
+LINKING_FLAGS = -lpthread  #-fsanitize=address
 SRC_FILES =
+PROTO_FILES = client_message.pb.cc server_message.pb.cc
+EXTRA_LFLAGS = $(LINKING_FLAGS) -lprotobuf lib_msg2.a
 
-format_test:
-	g++ -O3 -g -std=c++17 message_formatting_tests.cc -o message_formatting_test ${LINKING_FLAGS}
-	mv message_formatting_test ../
+message_formatting_tests:
+	$(CXX) $(COMPILE_FLAGS) $@.cc -o $@ ${LINKING_FLAGS}
+	mv message_formatting_tests ../
 
-client: 
-	g++ -O3 -g -std=c++17 client.cc ${SRC_FILES} -o client ${LINKING_FLAGS}
-	mv client ../
+client_test: 
+	$(CXX) $(COMPILE_FLAGS) $@.cc ${SRC_FILES} -o $@ ${LINKING_FLAGS}
+	mv client_test ../
+
+server_test:
+	$(CXX) $(COMPILE_FLAGS) $@.cc ${SRC_FILES} -o $@ ${LINKING_FLAGS}
+	mv server_test ../
 
 server:
-	g++ -O3 -g -std=c++17 server.cc ${SRC_FILES} -o server ${LINKING_FLAGS}
+	$(CXX) $(COMPILE_FLAGS) $@.cc ${PROTO_FILES} -o $@ ${EXTRA_LFLAGS}
 	mv server ../
 
+client:
+	$(CXX) $(COMPILE_FLAGS) $@.cc ${PROTO_FILES} -o $@ ${EXTRA_LFLAGS}
+	mv client ../
+
+
 clean:
-	rm -f ../server ../client ../message_formatting_test
+	rm -f ../server ../client ../message_formatting_tests ../server_test ../client_test server.txt client.txt output_.txt
 
 
 run:

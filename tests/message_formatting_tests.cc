@@ -25,9 +25,8 @@
 
 std::string random_alpharithmetic(size_t len) {
     std::string st;
-    for (int i = 0; i < len; i++) 
+    for (size_t i = 0; i < len; i++) 
         st += "d";
-
     return st;
 }
 
@@ -35,7 +34,7 @@ std::string random_alpharithmetic(size_t len) {
 int main(int args, char** argv) {
     // TEST 1
     auto st_payload = random_alpharithmetic(2);
-    auto payload_size = st_payload.size();
+    int payload_size = st_payload.size();
     char* payload = const_cast<char*>(st_payload.c_str());
     std::unique_ptr<char[]> dst1 = std::make_unique<char[]>(payload_size+4);
     std::unique_ptr<char[]> dst2 = std::make_unique<char[]>(payload_size+4);
