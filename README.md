@@ -40,7 +40,7 @@ Hint: You should implement those functions assuming non-blocking sockets.
 
 
 ## Task 6.3
-
+### 6.3.1
 Implement the ``get_operation`` and ``process_request`` and ``send_termination_message`` functions.
 The ``get_operation`` function generates requests for the client application. For your own testing you could generate the requests as you would like. 
 However, for passing the tests, the ``get_operation`` should have a specific requests distribution. In ``util_msg.cc``, we provide a skeleton and instructions on how to implement it.
@@ -49,9 +49,8 @@ However, for passing the tests, the ``get_operation`` should have a specific req
 The ``process_request`` is invoked from the server process and should deserialize and execute the received request(s). In case the server receives a termination message, it should also sent as a reply the current value of the global counter value.
 Lastly, the ``send_termination_message`` is executed by the client process. It constructs, serializes and sents to the server the termination message. Further it waits for the servers reply. For testing purposes, you could extend the messages layout (.proto files) but for the grading system, this is not required.
 
-a
-## Task 6.4
 
+### 6.3.2
 Implement the ``client`` function at ``client.cc``. 
 
 The client process spawns a number of threads each of which
@@ -61,8 +60,7 @@ Once all messages are received, each client-thread should sent a termination mes
 a thread should receive from the server the value of the global counter and should print the received value. Once all the client threads have joined, the client process terminates.
 
 
-## Task 6.5
-
+### 6.3.3
 Implement the `server` function at `server.cc`.
 
 The server process initially spawns a fixed number of threads (e.g. 2, 4, 8). Then it should accept connections on a port passed an argument. We use ``localhost`` as the specified IP.
