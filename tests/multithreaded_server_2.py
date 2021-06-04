@@ -9,9 +9,9 @@ def main() -> None:
     # Replace with the executable you want to test
     with open("server.txt", "w+") as stdout:
         try:
-            info("Run single-threaded server test ...")
-            threads = "1"
-            port    = "1026"
+            info("Run multithreaded-server test (2 threads) ...")
+            threads = "2"
+            port    = "1025"
             pro = run_project_executable("server", args=[threads, port], stdout=stdout, timeout=10)
 
 
@@ -28,7 +28,7 @@ def main() -> None:
                 warn(f"output does not match")
                 sys.exit(2)
 
-            info("OK: we killed server process 1")
+            info("OK: we killed server process")
 
         except OSError as e:
             warn(f"Failed to run command: {e}")

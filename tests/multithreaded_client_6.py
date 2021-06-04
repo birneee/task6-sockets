@@ -10,7 +10,7 @@ def main() -> None:
     try:
         with open("client.txt", "w+") as stdout:
             info("Run single-threaded client ...")
-            run_project_executable("client", args=["1", "localhost", "1026", "5000"], stdout=stdout)
+            run_project_executable("client", args=["6", "localhost", "1025", "5000"], stdout=stdout)
             info("OK")
 
     except OSError as e:

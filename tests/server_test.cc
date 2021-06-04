@@ -1,3 +1,4 @@
+// DO NOT EDIT
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -25,7 +26,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
-#include "../util.h"
+#include "util.h"
 
 
 int nb_server_threads   = 1;
@@ -84,6 +85,7 @@ int main(int args, char* argv[]) {
         std::cerr << "accept() failed .. " << std::strerror(errno) << "\n";
     }
 
+    // set the socket to non-blocking mode
     fcntl(new_fd, F_SETFL, O_NONBLOCK);
 
 
@@ -92,17 +94,14 @@ int main(int args, char* argv[]) {
         std::unique_ptr<char[]> buffer;
         if ((bytecount = secure_recv(new_fd, buffer, -1))  <= 0) {
             if (bytecount == 0) {
-                {
                     break;
-
-                }
-
             }
         }
         std::cout << bytecount << "\n";
     }
 
-
+    std::cout.flush();
+    close(new_fd);
     return 0;
 }
 

@@ -1,3 +1,5 @@
+// DO NOT EDIT
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -16,7 +18,7 @@
 #include <atomic>
 #include <iostream>
 #include <fstream>
-#include "../util.h"
+#include "util.h"
 
 
 int nb_clients  = -1;
@@ -24,6 +26,7 @@ int port        = -1;
 int nb_messages = -1;
 
 
+// returns a random std::string of size 'size'
 std::string getstring(size_t size) {
     std::string st;
     for (size_t i = 0; i < size; i++) {
@@ -32,9 +35,12 @@ std::string getstring(size_t size) {
     return st;
 }
 
+// returns a unique_ptr to a char[] of 'random' size
 std::unique_ptr<char[]> get_rand_data(size_t& size) {
     static int i = 1;
     i*= 2;
+
+    // do not sent bigger messages
     if (i > 65536)
         i = 1;
     size = i;
@@ -44,16 +50,17 @@ std::unique_ptr<char[]> get_rand_data(size_t& size) {
     std::unique_ptr<char[]> ptr = std::make_unique<char[]>(size);
     ::memcpy(ptr.get(), data, size);
 
-    return std::move(ptr);
+    // return std::move(ptr);
+    return ptr;
 }
 
 
 
 int main (int args, char* argv[]) {
-
     if (args < 4) {
         std::cerr << "usage: ./client <hostname> <port> <nb_messages>\n";
     }
+
 
     port        = std::atoi(argv[2]);
     nb_messages = std::atoi(argv[3]);
@@ -65,19 +72,6 @@ int main (int args, char* argv[]) {
 
     int sockfd, numbytes;
     struct sockaddr_in their_addr; 
-
-    /*
-    char hostn[400]; 
-
-    struct hostent *hostIP;
-
-    if((gethostname(hostn, sizeof(hostn))) == 0) {
-        hostIP = gethostbyname(hostn);
-    }
-    else {
-        printf("IP address not found."); 
-    }
-    */
 
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket");
@@ -94,11 +88,6 @@ int main (int args, char* argv[]) {
         exit(1);
     }
 
-    /*
-    std::ofstream myfile;
-     myfile.open ("client.txt", std::ios::app | std::ios::trunc);
-    */
-    uint64_t bytes_sent = 0;
     int iterations = nb_messages;
     while (iterations > 0) {
         size_t size = 0;
@@ -108,10 +97,8 @@ int main (int args, char* argv[]) {
             exit(1);
         }
         std::cout << numbytes << "\n";
-        bytes_sent += numbytes;
         iterations--;
     }
 
     close(sockfd);
-
 }

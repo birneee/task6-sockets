@@ -9,8 +9,8 @@ def main() -> None:
     # Replace with the executable you want to test
     try:
         with open("client.txt", "w+") as stdout:
-            info("Run client_test ...")
-            run_project_executable("client_test", args=["localhost", "1025", "5000"], stdout=stdout)
+            info("Run multithreaded clients (24 threads) ...")
+            run_project_executable("client", args=["24", "localhost", "1025", "5000"], stdout=stdout)
             info("OK")
 
     except OSError as e:

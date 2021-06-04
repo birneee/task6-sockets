@@ -22,5 +22,3 @@
 #include <memory>
 
 std::unique_ptr<char[]> get_operation(size_t& size);
-
-int32_t get_result(uint64_t result);

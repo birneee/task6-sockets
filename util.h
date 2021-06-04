@@ -57,8 +57,7 @@ int convertByteArrayToInt(char* b) {
  *
  */
 void construct_message(char* dst, char* payload, size_t payload_size) {
-    convertIntToByteArray(dst, payload_size);
-    ::memcpy(dst+4, payload, payload_size);
+    // TODO:
 }
 
 /**
@@ -67,88 +66,24 @@ void construct_message(char* dst, char* payload, size_t payload_size) {
  * The function expects at least that the msg contains the first 4 bytes that
  * indicate the actual size of the payload.
  */
-int destruct_message(char* msg, size_t bytes) {
-
-    auto actual_msg_size = convertByteArrayToInt(msg);
-
-    return actual_msg_size;
+int get_payload_size(char* msg, size_t bytes) {
+    // TODO:
 }
 
 
 /**
  * Sends to the connection defined by the fd, a message with a payload (data) of size len bytes.
+ * The fd should be non-blocking socket.
  */
 int secure_send(int fd, char* data, size_t len) {
-    int64_t bytes = 0;
-    int64_t remaining_bytes = len + 4;
-    
-    std::unique_ptr<char[]> buf = std::make_unique<char[]>(len + 4);
-    construct_message(buf.get(), data, len);
-    char* tmp = buf.get();
-
-    while (remaining_bytes > 0) {
-        bytes = send(fd, tmp, remaining_bytes, 0);
-        if (bytes < 0) {
-            // @dimitra: the socket is in non-blocking mode; select() should be also applied 
-            return -1;
-        }
-        remaining_bytes -= bytes;
-        tmp += bytes;
-    }
-
-    return len;
-
+    // TODO:
 }
 
 /**
- * 
+ * Receives a message from the fd (non-blocking) and stores it in buf.
  */
-int secure_recv(int fd, std::unique_ptr<char[]>& buf, size_t len) {
-    int64_t bytes = 0;
-    char* tmp;
-    int64_t remaining_bytes = 4;
-
-    // recv the message size (the first 4 bytes)
-    char dlen[4];
-    tmp = dlen;
-    while (remaining_bytes > 0) {
-        bytes = recv(fd, tmp, remaining_bytes, 0);
-        if (bytes < 0) {
-            // @dimitra: Note that the socket is non-blocking so it is fine to return -1 (EWOULDBLOCK/EAGAIN).
-        }
-        else if (bytes == 0) {
-            // @dimitra: Connection reset by peer
-            return 0;
-        }
-        else {
-            remaining_bytes -= bytes;
-            tmp += bytes;
-        }
-    }
-
-
-    int64_t actual_msg_size = destruct_message(dlen, 4);
-    remaining_bytes = actual_msg_size;
-    buf = std::make_unique<char[]>(actual_msg_size+1);
-    buf[actual_msg_size] = '\0';
-    tmp = buf.get();
-    
-    while (remaining_bytes > 0) {
-        bytes = recv(fd, tmp, remaining_bytes, 0);
-        if (bytes < 0) {
-            // @dimitra: Note that the socket is non-blocking so it is fine to return -1 (EWOULDBLOCK/EAGAIN).
-        }
-        else if (bytes == 0) {
-            return 0;
-        }
-        else {
-            remaining_bytes -= bytes;
-            tmp += bytes;
-        }
-    }
-
-
-    return actual_msg_size;
+int secure_recv(int fd, std::unique_ptr<char[]>& buf) {
+    // TODO
 }
 
 
