@@ -14,7 +14,7 @@ def main() -> None:
             info("Run single-threaded server test (1 thread) ...")
             with subprocess.Popen([cmd, "1025"], stdout=subprocess.PIPE) as proc:
                 info("Run single-threaded client test (1 thread) ...")
-                run_project_executable("client_test", args=["localhost", "1025", "5000"], stdout=stdout)
+                run_project_executable("client_test", args=["localhost", "1025", "10000"], stdout=stdout)
                 proc.kill();
                 outs, errs = proc.communicate()
 

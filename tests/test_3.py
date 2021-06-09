@@ -25,6 +25,7 @@ def main() -> None:
                 output = open("client_output_test_3.txt").readlines()
                 Listb =  [x.replace('\n', '') for x in output if x!='']
                 Listb.sort()
+                print(Listb)
                 if Lista != Listb:
                     warn(f"output does not match")
                     print(Lista)

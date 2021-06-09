@@ -14,7 +14,7 @@ def main() -> None:
             info("Run multithreaded-server test (2 threads) ...")
             with subprocess.Popen([cmd, "2", "1025"], stdout=subprocess.PIPE) as proc:
                 info("Run multithreaded-client test (6 threads) ...")
-                run_project_executable("client", args=["6", "localhost", "1025", "5000"], stdout=stdout)
+                run_project_executable("client", args=["6", "localhost", "1025", "10000"], stdout=stdout)
                 proc.kill();
                 outs, errs = proc.communicate()
 
@@ -25,11 +25,20 @@ def main() -> None:
                 output = open("client_output_test_4.txt").readlines()
                 Listb =  [x.replace('\n', '') for x in output if x!='']
                 Listb.sort()
+                print(Listb)
                 if Lista != Listb:
                     warn(f"output does not match")
                     print(Lista)
                     print(Listb)
                     sys.exit(2)
+
+                num = 5000*3*6
+                if str(num) != Lista[-1]:
+                    warn(f"output is not correct")
+                    print(num)
+                    print(Lista[-1])
+                    sys.exit(2)
+
                 info("OK")
 
         except OSError as e:
