@@ -5,45 +5,26 @@ python ./test_messages.py
 
 
 # Test the secure_recv() and secure_sent() functions
-python ./single_threaded_server.py &
-sleep 1
-python ./single_threaded_client.py
-sleep 1
+python ./test_2.py
 
 # Test single-threaded server and client
-python ./test_server.py &
-sleep 1
-python ./test_client.py
-sleep 10
+python ./test_3.py
 
 
 # Test multithreaded-server and clients
-python ./multithreaded_server_2.py &
-sleep 1
-python ./multithreaded_client_6.py &
-sleep 12
+python ./test_4.py
 
 
 
 # Test multithreaded-server and clients
-python ./multithreaded_server_6.py &
-sleep 1
-python ./multithreaded_client_6.py &
-sleep 12
+python ./test_5.py
 
 
 # Test multithreaded-server and clients
-python ./multithreaded_server_2.py &
-sleep 1
-python ./multithreaded_client_24.py
-sleep 12
+python ./test_6.py
 
 
 # Test repeated requests for connections
-python ./multithreaded_server_longrunning.py &
-sleep 1
-python ./run_many_client_procs.py
-
-sleep 30
+python ./test_7.py
 
 echo "Finished tests .."
