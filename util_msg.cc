@@ -67,7 +67,7 @@ std::unique_ptr<char[]> get_operation(size_t& size) {
 
     }
     else {
-        // create a SUB request that adds -2
+        // create a SUB request with 2 as an argument
         // that can be either 2 repeated sub requests
         // or one add request with 2 as an argument
     
