@@ -22,12 +22,12 @@ You can produce the c++ files using
 
 
 ## Task 6.1
-Implement the ``construct_message`` and ``get_payload_size`` functions at ``util.h``.
+Iamplement the ``construct_message`` and ``get_payload_size`` functions at ``util.h``.
 
 TCP communication does not distinguish between different messages; ``recv`` system call might return a stream of bytes that refer to more than one distinct applications messages.
 To process the individual messages, applications should implement their own message's formatting or serialization protocol. 
 
-A common approach is to encapsulate the payload size as follows: <size> <payload>, where payload is a serialized protobuf (byte-stream).
+A common approach is to encapsulate the payload size as follows: ``<--size--><--payload-->``, where payload is a serialized protobuf (byte-stream).
 
 For the functions implementation please see comments in ``util.h``.
 
