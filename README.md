@@ -8,7 +8,7 @@ The listening address should be also passed as an argument. Note that for testin
 For example, you can execute ``./server <nb_server_threads> localhost 1025``.
 
 
-You should also have to implement the client, which sends requests to the server.
+You also have to implement the client, which sends requests to the server.
 The requests can be of type: ADD, SUB, and TERMINATION which manipulate (ADD/SUB) a global counter the server manages or notify the server about the client's termination (TERMINATION) respectively.
 The server process stores a global counter and atomically updates it based on the received requests.
 Along with ADD/SUB requests, the request also contains a number that will
