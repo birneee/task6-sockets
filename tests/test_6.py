@@ -19,10 +19,12 @@ def main() -> None:
                 outs, errs = proc.communicate()
 
                 Lista = [x for x in outs.decode('utf-8').replace('\\n', '\n').split('\n') if x!='']
-                Lista.sort()
 
                 output = open("client_output_test_6.txt").readlines()
                 Listb =  [x.replace('\n', '') for x in output if x!='']
+                Lista = list(map(int, Lista))
+                Listb = list(map(int, Listb))
+                Lista.sort()
                 Listb.sort()
                 if Lista != Listb:
                     warn(f"output does not match")
@@ -31,9 +33,9 @@ def main() -> None:
                     sys.exit(2)
 
                 num = 5000 * 100 * 3
-                if str(num) not in Lista:
+                if num != Lista[-1]:
                     warn(f"output not correct")
-                    print(max(Lista))
+                    print(Lista[-1])
                     print(Lista)
                     Lista.sort();
                     print(Lista)

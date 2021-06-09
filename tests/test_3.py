@@ -19,13 +19,15 @@ def main() -> None:
                 outs, errs = proc.communicate()
 
                 Lista = [x for x in outs.decode('utf-8').replace('\\n', '\n').split('\n') if x!='']
-                Lista.sort()
-                print(Lista)
 
                 output = open("client_output_test_3.txt").readlines()
                 Listb =  [x.replace('\n', '') for x in output if x!='']
+
+                Lista = list(map(int, Lista))
+                Listb = list(map(int, Listb))
+                Lista.sort()
                 Listb.sort()
-                print(Listb)
+
                 if Lista != Listb:
                     warn(f"output does not match")
                     print(Lista)
