@@ -14,10 +14,10 @@ The server process stores a global counter and atomically updates it based on th
 Along with ADD/SUB requests, the request also contains a number that will
 be added/sub from the global counter respectively.
 Lastly, the TERMINATION request, instructs the server to sent back to the client a message that contains the value of the global counter.
-We use the value of the global counter to verify that the applications are executed correctly. 
 In particular, for each termination request the server prints the value of the global counter, it send over
-the network. Similarly, each client thread, prints the value the server sent to it. 
-As a serialization protocol, you are encouraged to use google::protobufs. Note that the .proto files that describe the message layout and are already provided for you. You can produce the c++ files using
+the network. Similarly, each client thread prints the value the server has sent to it. 
+As a serialization protocol, you are encouraged to use ``google::protobufs``. Note that the ``.proto`` files that describe the message layout are already provided for you. 
+You can produce the c++ files using
 ``protoc --cpp_out=. <filename>.proto`` (this is also included in the Makefile). However, you can design and implement any message layout/parser you would like.
 
 
