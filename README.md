@@ -61,23 +61,23 @@ Implement the ``client`` function at ``client.cc``.
 The client process spawns a number of threads each of which
 connects to the server process to a given address. 
 The client process takes as an argument the address (hostname and port) of the listening server address. If client and server run in the same machine you could use ``localhost``.
-After establishing the connection with the server, each thread should sent a variable number of messages (taken as an argument).
-Once all messages are received, each client-thread should sent a termination message to the server. Right after the delivery of the termination message
+After establishing the connection with the server, each thread should send a variable number of messages (taken as an argument).
+Once all messages are received, each client-thread should send a termination message to the server. Right after the delivery of the termination message
 the thread should receive from the server the value of the global counter and should print the received value. Once all the client threads have joined, the client process terminates.
 
 
 ### 6.3.3
 Implement the `server` function at `server.cc`.
 
-The server process initially spawns a fixed number of threads (e.g. 2, 4, 8). Then it should accept connections on a port passed as an argument. We use ``localhost`` as the specified IP.
+The server process initially spawns a fixed number of threads (taken as an argument, e.g. 2, 4, 8). Then it should accept connections on a port passed as an argument. We use ``localhost`` as the specified IP.
 The server should be available to 
 accept connections at any time and should not terminate (long running process). 
-Once a connection is accepted, the server process should assing this connection to one of the server threads.
+Once a connection is accepted, the server process should assign this connection to one of the server threads.
 You could find the elected thread's id by dividing the number of connections with the number of the server threads (``nb_connections % nb_threads``). 
 If a server thread receives a termination message, it should reply back to the client with the number of
 received bytes in this connection.
 
 
 ## Important notes
-``printf()``-based functions are not thread-safe and in the presence of many clients you might print the correct counter values in the same line. In that case, the tests in the grading system migth fail.
+``printf()``-based functions are not thread-safe and in the presence of many clients you might print the correct counter values in the same line. In that case, the tests in the grading system might fail.
 We encourage you to wrap the print-functions with a global mutex to ensure that a message is flushed to standard output in a specific order.
