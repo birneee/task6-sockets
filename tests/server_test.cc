@@ -92,7 +92,7 @@ int main(int args, char* argv[]) {
     int64_t bytecount = -1;
     while (1) {
         std::unique_ptr<char[]> buffer;
-        if ((bytecount = secure_recv(new_fd, buffer, -1))  <= 0) {
+        if ((bytecount = secure_recv(new_fd, buffer))  <= 0) {
             if (bytecount == 0) {
                     break;
             }

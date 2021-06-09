@@ -75,7 +75,7 @@ int get_payload_size(char* msg, size_t bytes) {
  * Sends to the connection defined by the fd, a message with a payload (data) of size len bytes.
  * The fd should be non-blocking socket.
  */
-int secure_send(int fd, char* data, size_t len) {
+int secure_send(int fd, char* data) {
     // TODO:
 }
 
