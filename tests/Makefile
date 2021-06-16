@@ -8,6 +8,15 @@ check: clean client_test server_test message_formatting_tests run
 build: clean client_test server_test message_formatting_tests
 
 LINKING_FLAGS = -lpthread  #-fsanitize=address
+ifneq (,$(wildcard ../libutil.so))
+	LINKING_FLAGS += -L.. -lutil
+endif
+ifneq (,$(wildcard ../target/release/libutil.so))
+	LINKING_FLAGS += -L../target/release -lutil
+endif
+ifneq (,$(wildcard ../target/debug/libutil.so))
+	LINKING_FLAGS += -L../target/debug -lutil
+endif
 PROTO_FILES = client_message.pb.cc server_message.pb.cc
 SRC_FILES = util_msg.cc
 EXTRA_LFLAGS = $(LINKING_FLAGS) -lprotobuf
