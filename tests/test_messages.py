@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 
-import os
 import sys
 
-from testsupport import info, run_project_executable, warn, find_library
+from testsupport import info, run_project_executable, warn
 
 
 def main() -> None:
     # Replace with the executable you want to test
     try:
         info("Run message format tests ...")
-        lib = find_library("libutil.so")
-        env = {"LD_LIBRARY_PATH": str(os.path.abspath(os.path.dirname(lib)))} if lib else {}
-        run_project_executable("message_formatting_tests", extra_env=env)
+        run_project_executable("message_formatting_tests")
         info("OK")
     except OSError as e:
         warn(f"Failed to run command: {e}")

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
-import os
 import sys
 
-from testsupport import info, run_project_executable, warn, run, subprocess, find_project_executable, find_library
+from testsupport import info, run_project_executable, warn, run, subprocess, find_project_executable
 
 
 def main() -> None:
@@ -12,12 +11,10 @@ def main() -> None:
         try:
             cmd = find_project_executable("server")
             print(cmd)
-            lib = find_library("libutil.so")
-            env = {"LD_LIBRARY_PATH": str(os.path.dirname(lib))} if lib else {}
             info("Run multithreaded-server test (2 threads) ...")
-            with subprocess.Popen([cmd, "2", "1025"], stdout=subprocess.PIPE, env=env) as proc:
+            with subprocess.Popen([cmd, "2", "1025"], stdout=subprocess.PIPE) as proc:
                 info("Run multithreaded-client test (6 threads) ...")
-                run_project_executable("client", args=["6", "localhost", "1025", "10000"], stdout=stdout, extra_env=env)
+                run_project_executable("client", args=["6", "localhost", "1025", "10000"], stdout=stdout)
                 proc.kill();
                 outs, errs = proc.communicate()
 
