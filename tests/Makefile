@@ -9,13 +9,13 @@ build: clean client_test server_test message_formatting_tests
 
 LINKING_FLAGS = -lpthread  #-fsanitize=address
 ifneq (,$(wildcard ../libutil.so))
-	LINKING_FLAGS += -L.. -lutil
+	LINKING_FLAGS += -L.. -lutil -Wl,-rpath,$(CURDIR)/..
 endif
 ifneq (,$(wildcard ../target/release/libutil.so))
-	LINKING_FLAGS += -L../target/release -lutil
+	LINKING_FLAGS += -L../target/release -lutil -Wl,-rpath,$(CURDIR)/../target/release
 endif
 ifneq (,$(wildcard ../target/debug/libutil.so))
-	LINKING_FLAGS += -L../target/debug -lutil
+	LINKING_FLAGS += -L../target/debug -lutil -Wl,-rpath,$(CURDIR)/../target/debug
 endif
 PROTO_FILES = client_message.pb.cc server_message.pb.cc
 SRC_FILES = util_msg.cc
@@ -30,7 +30,7 @@ message_formatting_tests:
 	$(CXX) $(COMPILE_FLAGS) $(CXXFLAGS) $@.cc -o $@ ${LINKING_FLAGS}
 	mv message_formatting_tests ../
 
-client_test: 
+client_test:
 	$(CXX) $(COMPILE_FLAGS) $(CXXFLAGS) $@.cc -o $@ ${LINKING_FLAGS}
 	mv client_test ../
 
